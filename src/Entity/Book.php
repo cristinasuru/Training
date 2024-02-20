@@ -25,9 +25,14 @@ class Book
 
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $isbn = null;
+    #[ORM\Column(length: 255)]
+    private ?string $cover = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $plot = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    private ?\DateTimeImmutable $editedAt = null;
+    private ?\DateTimeImmutable $releasedAt = null;
 
     #[ORM\OneToMany(
         targetEntity: Comment::class,
@@ -36,6 +41,9 @@ class Book
         orphanRemoval: true
     )]
     private Collection $comments;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $price = null;
 
     public function __construct()
     {
@@ -88,14 +96,38 @@ class Book
         return $this;
     }
 
-    public function getEditedAt(): ?\DateTimeImmutable
+    public function getReleasedAt(): ?\DateTimeImmutable
     {
-        return $this->editedAt;
+        return $this->releasedAt;
     }
 
-    public function setEditedAt(\DateTimeImmutable $editedAt): static
+    public function setReleasedAt(\DateTimeImmutable $releasedAt): static
     {
-        $this->editedAt = $editedAt;
+        $this->releasedAt = $releasedAt;
+
+        return $this;
+    }
+
+    public function getCover(): ?string
+    {
+        return $this->cover;
+    }
+
+    public function setCover(string $cover): static
+    {
+        $this->cover = $cover;
+
+        return $this;
+    }
+
+    public function getPlot(): ?string
+    {
+        return $this->plot;
+    }
+
+    public function setPlot(string $plot): static
+    {
+        $this->plot = $plot;
 
         return $this;
     }
@@ -126,6 +158,18 @@ class Book
                 $comment->setBook(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPrice(): ?int
+    {
+        return $this->price;
+    }
+
+    public function setPrice(?int $price): static
+    {
+        $this->price = $price;
 
         return $this;
     }

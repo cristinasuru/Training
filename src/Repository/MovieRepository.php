@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Movie;
+use App\Movie\Enum\SearchType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -45,4 +46,19 @@ class MovieRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function getMovieByTitle(SearchType $type, string $value): ?Movie
+    {
+        $qb = $this->createQueryBuilder('m');
+
+        $where = SearchType::Id === $type
+            ? 'm.imdbId = :value'
+            : $qb->expr()->like('m.title', ':value');
+
+        return $qb->andWhere($where)
+            ->setParameter('value', "%$value%")
+            ->orderBy('m.releasedAt', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

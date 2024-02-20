@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -15,11 +16,12 @@ class HelloWorldController extends AbstractController
             'controller_name' => 'hello'
         ]);
     }
-    #[Route('/hello/{name?world}', name: 'app_hello_name', requirements: ['name' => '[a-zA-Z]+'])]
-    public function helloName(string $name): Response
+    #[Route('/hello/{name?World}', name: 'app_hello_index', requirements: ['name' => '(?:\pL|[- ])+'])]
+    public function index(string $name, #[Autowire(param: 'app.symfony_version')] string $sfVersion): Response
     {
-        return $this->render('Hello/index.html.twig', [
-            'controller_name' => $name
+        dump($sfVersion);
+        return $this->render('hello/index.html.twig', [
+            'controller_name' => $name,
         ]);
     }
 

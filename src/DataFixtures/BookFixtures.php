@@ -9,6 +9,8 @@ use Symfony\Component\Finder\Finder;
 
 class BookFixtures extends Fixture
 {
+    use FixtureFileImporterTrait;
+
     public function load(ObjectManager $manager): void
     {
         foreach ($this->getBooks() as $book) {
@@ -20,28 +22,16 @@ class BookFixtures extends Fixture
 
     private function getBooks(): iterable
     {
-        foreach ($this->getBooksData() as $datum) {
+        foreach ($this->getData('book_fixtures.json') as $datum) {
             $book = (new Book())
                 ->setTitle($datum['title'])
                 ->setCover($datum['cover'])
                 ->setAuthor($datum['author'])
                 ->setIsbn($datum['isbn'])
                 ->setPlot($datum['plot'])
-                ->setReleasedAt(new \DateTimeImmutable($datum['releasetAt']));
+                ->setReleasedAt(new \DateTimeImmutable($datum['releasedAt']));
+
             yield $book;
-        }
-    }
-    private function getBooksData(): iterable
-    {
-        $files = (new Finder())
-            ->in(__DIR__)
-            ->files()
-            ->name('book_fixtures.json');
-        foreach ($files as $file) {
-            $content = $file->getContents();
-            foreach (json_decode($content, true) as $data) {
-                yield $data;
-            }
         }
     }
 }

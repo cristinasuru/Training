@@ -21,7 +21,11 @@ class Comment
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $postedAt = null;
+
     #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Book $book = null;
 
     public function getId(): ?int
@@ -59,6 +63,18 @@ class Comment
     public function setContent(string $content): static
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function getPostedAt(): ?\DateTimeImmutable
+    {
+        return $this->postedAt;
+    }
+
+    public function setPostedAt(\DateTimeImmutable $postedAt): static
+    {
+        $this->postedAt = $postedAt;
 
         return $this;
     }
